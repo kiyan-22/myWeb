@@ -30,6 +30,7 @@
 
   const sections = [...document.querySelectorAll("section[id]")];
   const navAnchors = [...links.querySelectorAll("a")];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -88,6 +89,26 @@
   );
   skills.forEach((s) => skillWatch.observe(s));
 
+  if (!reduceMotion) {
+    skills.forEach((skill) => {
+      skill.addEventListener("pointermove", (event) => {
+        const rect = skill.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+        const rotateY = (x - 0.5) * 16;
+        const rotateX = (0.5 - y) * 16;
+
+        skill.style.setProperty("--tilt-x", `${rotateX}deg`);
+        skill.style.setProperty("--tilt-y", `${rotateY}deg`);
+      });
+
+      skill.addEventListener("pointerleave", () => {
+        skill.style.setProperty("--tilt-x", "0deg");
+        skill.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+  }
+
   document.querySelectorAll(".filter").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter").forEach((b) => b.classList.remove("is-on"));
@@ -144,7 +165,6 @@
     });
   }
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!reduceMotion) {
     document.querySelectorAll(".btn, .nav-cta").forEach((btn) => {
       btn.addEventListener("mousemove", (e) => {
