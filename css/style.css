@@ -247,7 +247,7 @@ textarea {
 }
 
 .hero {
-  min-height: 100vh;
+  min-height: 95vh;
   padding: 7.2rem var(--gap) 3.4rem;
   display: flex;
   flex-direction: column;
